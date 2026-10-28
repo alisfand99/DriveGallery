@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
         refreshPerms()
         // Denied for good, or only "selected photos" granted: the only way left is the app's settings page.
         if (!perms.media && !shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES)) {
-            toast("در تنظیمات برنامه، دسترسی «همه عکس‌ها و ویدیوها» را مجاز کن.")
+            toast("In the app settings, allow access to all photos and videos.")
             startActivity(
                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))
             )
@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                 val r = Identity.getAuthorizationClient(this).getAuthorizationResultFromIntent(res.data)
                 acceptAuth(r.accessToken)
             } catch (e: Exception) {
-                toast("ورود انجام نشد: ${e.message}")
+                toast("Sign-in failed: ${e.message}")
             }
         }
     }
@@ -186,7 +186,7 @@ class MainActivity : ComponentActivity() {
                     acceptAuth(r.accessToken)
                 }
             }
-            .addOnFailureListener { toast("اتصال به Google انجام نشد: ${it.message}") }
+            .addOnFailureListener { toast("Could not connect to Google: ${it.message}") }
     }
 
     private fun acceptAuth(token: String?) {
@@ -209,9 +209,9 @@ class MainActivity : ComponentActivity() {
     private fun deleteUploaded() {
         lifecycleScope.launch {
             val out = app.deleter.deleteUploaded()
-            if (out.deleted > 0) toast("${out.deleted} فایل از گوشی پاک شد")
+            if (out.deleted > 0) toast("${out.deleted} files removed from the phone")
             if (out.unverified > 0) {
-                toast("${out.unverified} فایل پاک نشد چون با نسخه Drive تطبیق داده نشد")
+                toast("${out.unverified} files were not removed because they could not be matched with the Drive copy")
             }
             if (out.needConsent.isNotEmpty()) {
                 consentQueue.clear()
@@ -247,15 +247,15 @@ class MainActivity : ComponentActivity() {
                     NavigationBar {
                         NavigationBarItem(
                             selected = tab == 0, onClick = { tab = 0 },
-                            icon = { Icon(Icons.Default.PhotoLibrary, null) }, label = { Text("گالری") }
+                            icon = { Icon(Icons.Default.PhotoLibrary, null) }, label = { Text("Gallery") }
                         )
                         NavigationBarItem(
                             selected = tab == 1, onClick = { tab = 1 },
-                            icon = { Icon(Icons.Default.Folder, null) }, label = { Text("آلبوم‌ها") }
+                            icon = { Icon(Icons.Default.Folder, null) }, label = { Text("Albums") }
                         )
                         NavigationBarItem(
                             selected = tab == 2, onClick = { tab = 2 },
-                            icon = { Icon(Icons.Default.Settings, null) }, label = { Text("تنظیمات") }
+                            icon = { Icon(Icons.Default.Settings, null) }, label = { Text("Settings") }
                         )
                     }
                 },
@@ -263,7 +263,7 @@ class MainActivity : ComponentActivity() {
                 Box(Modifier.padding(pad).consumeWindowInsets(pad)) {
                     when (tab) {
                         0 -> GalleryScreen(
-                            app = app, title = "گالری", items = items,
+                            app = app, title = "Gallery", items = items,
                             onOpen = { viewer = ViewerRequest(items, it) },
                             header = {
                                 Column {

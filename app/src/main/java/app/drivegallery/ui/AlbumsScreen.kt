@@ -28,7 +28,7 @@ import app.drivegallery.Item
 fun AlbumsScreen(items: List<Item>, onOpenAlbum: (String) -> Unit) {
     val albums = remember(items) { items.groupBy { it.relPath }.entries.sortedBy { it.key.lowercase() } }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("آلبوم‌ها") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text("Albums") }) }) { padding ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -56,7 +56,7 @@ fun AlbumsScreen(items: List<Item>, onOpenAlbum: (String) -> Unit) {
                             )
                         }
                         Text(
-                            "${entry.value.size} مورد",
+                            "${entry.value.size} items",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

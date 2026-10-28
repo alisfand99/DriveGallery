@@ -64,14 +64,14 @@ fun SetupCard(perms: Perms, host: Host) {
     if (perms.drive && perms.media) return
     Card(Modifier.fillMaxWidth().padding(8.dp)) {
         Column(Modifier.padding(14.dp)) {
-            Text("راه‌اندازی", style = MaterialTheme.typography.titleMedium)
+            Text("Setup", style = MaterialTheme.typography.titleMedium)
             Text(
-                "برای شروع، این دو مرحله را انجام بده. بعد از آن هر عکس و ویدیو خودکار آپلود می‌شود.",
+                "To get started, complete these two steps. After that every photo and video uploads automatically.",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(vertical = 6.dp),
             )
-            StepRow("ورود به Google Drive", perms.drive, "اتصال", host.requestDrive)
-            StepRow("دسترسی کامل به عکس‌ها و ویدیوها", perms.media, "اجازه", host.requestMedia)
+            StepRow("Sign in to Google Drive", perms.drive, "Connect", host.requestDrive)
+            StepRow("Full access to photos and videos", perms.media, "Allow", host.requestMedia)
         }
     }
 }
@@ -105,121 +105,121 @@ fun SettingsScreen(
     val queued = remember(items) { items.count { it.state == State.PENDING } }
     val reclaimable = remember(items) { items.count { it.state == State.UPLOADED && it.localPresent } }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("تنظیمات") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text("Settings") }) }) { padding ->
         Column(
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text("وضعیت", style = MaterialTheme.typography.titleMedium)
-            Text("در Drive: $inDrive    در صف آپلود: $queued")
-            Text("آپلودشده و هنوز روی گوشی: $reclaimable")
+            Text("Status", style = MaterialTheme.typography.titleMedium)
+            Text("In Drive: $inDrive    Waiting to upload: $queued")
+            Text("Uploaded and still on the phone: $reclaimable")
             Button(onClick = { Scheduler.syncNow(ctx) }, enabled = perms.drive && perms.media) {
-                Text("همگام‌سازی همین حالا")
+                Text("Sync now")
             }
 
             HorizontalDivider(Modifier.padding(vertical = 6.dp))
-            Text("دسترسی‌ها", style = MaterialTheme.typography.titleMedium)
-            StepRow("ورود به Google Drive", perms.drive, "اتصال", host.requestDrive)
-            StepRow("دسترسی کامل به عکس‌ها و ویدیوها", perms.media, "اجازه", host.requestMedia)
-            StepRow("اعلان‌ها (پیشرفت آپلود)", perms.notifications, "اجازه", host.requestNotifications)
-            StepRow("مدیریت رسانه (حذف بی‌صدا بعد از آپلود)", perms.manageMedia, "باز کردن", host.openManageMedia)
-            StepRow("بدون محدودیت باتری (آپلود پایدار)", perms.battery, "اجازه", host.requestBattery)
+            Text("Permissions", style = MaterialTheme.typography.titleMedium)
+            StepRow("Sign in to Google Drive", perms.drive, "Connect", host.requestDrive)
+            StepRow("Full access to photos and videos", perms.media, "Allow", host.requestMedia)
+            StepRow("Notifications (upload progress)", perms.notifications, "Allow", host.requestNotifications)
+            StepRow("Media management (silent removal after upload)", perms.manageMedia, "Open", host.openManageMedia)
+            StepRow("Unrestricted battery (reliable uploads)", perms.battery, "Allow", host.requestBattery)
 
             HorizontalDivider(Modifier.padding(vertical = 6.dp))
-            Text("بعد از آپلود، فایل روی گوشی", style = MaterialTheme.typography.titleMedium)
+            Text("After upload, the file on the phone", style = MaterialTheme.typography.titleMedium)
             ModeRow(
-                mode == DeleteMode.AUTO, "خودکار پاک شود",
-                "بعد از آپلود و تطبیق کامل با نسخه Drive، فایل بلافاصله از گوشی حذف می‌شود."
+                mode == DeleteMode.AUTO, "Is removed automatically",
+                "After upload and a full match with the Drive copy, the file is removed from the phone right away."
             ) {
                 mode = DeleteMode.AUTO
                 prefs.deleteMode = DeleteMode.AUTO
             }
             if (mode == DeleteMode.AUTO && !perms.manageMedia) {
                 Text(
-                    "بدون دسترسی «مدیریت رسانه» اندروید هر بار برای حذف تأیید می‌خواهد و فقط یک اعلان می‌بینی.",
+                    "Without the Media management permission, Android asks for confirmation before each removal and you only see a notification.",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
             ModeRow(
-                mode == DeleteMode.MANUAL, "دستی، خودم پاک می‌کنم",
-                "برنامه هیچ فایلی را پاک نمی‌کند. خودت از داخل گوشی پاک می‌کنی."
+                mode == DeleteMode.MANUAL, "Manual, I delete it myself",
+                "The app never deletes any file. You delete them yourself on the phone."
             ) {
                 mode = DeleteMode.MANUAL
                 prefs.deleteMode = DeleteMode.MANUAL
             }
             ModeRow(
-                mode == DeleteMode.ON_DEMAND, "با دکمه",
-                "هر وقت خواستی دکمه پایین را بزن تا همه فایل‌های آپلودشده یک‌جا پاک شوند."
+                mode == DeleteMode.ON_DEMAND, "With a button",
+                "Whenever you want, tap the button below to remove all uploaded files at once."
             ) {
                 mode = DeleteMode.ON_DEMAND
                 prefs.deleteMode = DeleteMode.ON_DEMAND
             }
             Button(onClick = { confirmDelete = true }, enabled = reclaimable > 0) {
-                Text("پاک کردن همه فایل‌های آپلودشده از گوشی ($reclaimable)")
+                Text("Remove all uploaded files from the phone ($reclaimable)")
             }
 
             HorizontalDivider(Modifier.padding(vertical = 6.dp))
-            Text("آپلود", style = MaterialTheme.typography.titleMedium)
-            SwitchRow("فقط با Wi‑Fi", wifi) {
+            Text("Upload", style = MaterialTheme.typography.titleMedium)
+            SwitchRow("Wi-Fi only", wifi) {
                 wifi = it
                 prefs.wifiOnly = it
                 Scheduler.ensureScheduled(ctx, replace = true)
             }
-            SwitchRow("فقط وقتی در شارژ است", charging) {
+            SwitchRow("Only while charging", charging) {
                 charging = it
                 prefs.chargingOnly = it
                 Scheduler.ensureScheduled(ctx, replace = true)
             }
-            SwitchRow("ویدیوها هم آپلود شوند", videos) {
+            SwitchRow("Upload videos too", videos) {
                 videos = it
                 prefs.includeVideos = it
             }
 
             HorizontalDivider(Modifier.padding(vertical = 6.dp))
-            Text("حساب", style = MaterialTheme.typography.titleMedium)
-            Text("پوشه در Drive: ${prefs.rootName}", style = MaterialTheme.typography.bodyMedium)
+            Text("Account", style = MaterialTheme.typography.titleMedium)
+            Text("Folder in Drive: ${prefs.rootName}", style = MaterialTheme.typography.bodyMedium)
             Text(
-                "ساختار پوشه‌ها در Drive دقیقاً همان ساختار گوشی است.",
+                "The folder structure in Drive is exactly the same as on the phone.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            OutlinedButton(onClick = { confirmSignOut = true }) { Text("قطع اتصال و توقف آپلود") }
+            OutlinedButton(onClick = { confirmSignOut = true }) { Text("Disconnect and stop uploading") }
         }
     }
 
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("پاک کردن از گوشی؟") },
+            title = { Text("Remove from the phone?") },
             text = {
                 Text(
-                    "$reclaimable فایل که قبلاً آپلود شده‌اند از حافظه گوشی پاک می‌شوند. " +
-                        "فقط فایل‌هایی پاک می‌شوند که نسخه Drive آنها با نسخه گوشی کاملاً یکی بودنش تأیید شده باشد."
+                    "$reclaimable files that were already uploaded will be removed from the phone storage. " +
+                        "Only files whose Drive copy is verified to be identical to the phone copy are removed."
                 )
             },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete = false
                     host.deleteUploaded()
-                }) { Text("پاک کن") }
+                }) { Text("Remove") }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("انصراف") } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
         )
     }
 
     if (confirmSignOut) {
         AlertDialog(
             onDismissRequest = { confirmSignOut = false },
-            title = { Text("قطع اتصال؟") },
-            text = { Text("آپلود خودکار متوقف می‌شود. چیزی از Drive یا گوشی پاک نمی‌شود.") },
+            title = { Text("Disconnect?") },
+            text = { Text("Automatic uploading stops. Nothing is deleted from Drive or the phone.") },
             confirmButton = {
                 TextButton(onClick = {
                     confirmSignOut = false
                     host.signOut()
-                }) { Text("قطع کن") }
+                }) { Text("Disconnect") }
             },
-            dismissButton = { TextButton(onClick = { confirmSignOut = false }) { Text("انصراف") } },
+            dismissButton = { TextButton(onClick = { confirmSignOut = false }) { Text("Cancel") } },
         )
     }
 }

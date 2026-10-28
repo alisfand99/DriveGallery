@@ -23,10 +23,10 @@ object Notifier {
 
     fun createChannels(ctx: Context) {
         nm(ctx).createNotificationChannel(
-            NotificationChannel(CH_SYNC, "پیشرفت آپلود", NotificationManager.IMPORTANCE_LOW)
+            NotificationChannel(CH_SYNC, "Upload progress", NotificationManager.IMPORTANCE_LOW)
         )
         nm(ctx).createNotificationChannel(
-            NotificationChannel(CH_ALERT, "هشدارها", NotificationManager.IMPORTANCE_DEFAULT)
+            NotificationChannel(CH_ALERT, "Alerts", NotificationManager.IMPORTANCE_DEFAULT)
         )
     }
 
@@ -41,8 +41,8 @@ object Notifier {
     fun progressNotification(ctx: Context, done: Int, total: Int): Notification =
         NotificationCompat.Builder(ctx, CH_SYNC)
             .setSmallIcon(android.R.drawable.stat_sys_upload)
-            .setContentTitle("در حال آپلود در Google Drive")
-            .setContentText(if (total > 0) "$done از $total" else "آماده‌سازی")
+            .setContentTitle("Uploading to Google Drive")
+            .setContentText(if (total > 0) "$done of $total" else "Preparing")
             .setProgress(total, done, total == 0)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -68,20 +68,20 @@ object Notifier {
     }
 
     fun authNeeded(ctx: Context) = alert(
-        ctx, ID_AUTH, "ورود به Google لازم است",
-        "اجازه دسترسی به Drive منقضی شده. برنامه را باز کن و دوباره وارد شو تا آپلود ادامه پیدا کند.",
+        ctx, ID_AUTH, "Google sign-in required",
+        "Drive access has expired. Open the app and sign in again to continue uploading.",
         openApp(ctx)
     )
 
     fun consentNeeded(ctx: Context, count: Int) = alert(
-        ctx, ID_CONSENT, "$count فایل آپلودشده آماده حذف از گوشی است",
-        "اندروید برای حذف بی‌صدا به دسترسی «مدیریت رسانه» نیاز دارد. اینجا بزن تا با یک تأیید همه پاک شوند.",
+        ctx, ID_CONSENT, "$count uploaded files are ready to remove from the phone",
+        "Android needs the Media management permission for silent removal. Tap here to remove them all with one confirmation.",
         openApp(ctx, ACTION_DELETE_UPLOADED)
     )
 
     fun quotaFull(ctx: Context) = alert(
-        ctx, ID_QUOTA, "فضای Google Drive پر شده",
-        "آپلود متوقف شد. فایل‌های گوشی دست‌نخورده مانده‌اند.",
+        ctx, ID_QUOTA, "Google Drive storage is full",
+        "Uploading stopped. The files on your phone are untouched.",
         openApp(ctx)
     )
 }

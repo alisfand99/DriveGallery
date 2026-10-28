@@ -110,7 +110,7 @@ fun GalleryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (selecting) "${selected.size} انتخاب شد" else title) },
+                title = { Text(if (selecting) "${selected.size} selected" else title) },
                 navigationIcon = {
                     if (selecting) {
                         IconButton(onClick = { selected = emptySet() }) { Icon(Icons.Default.Close, null) }
@@ -120,7 +120,7 @@ fun GalleryScreen(
                 },
                 actions = {
                     if (selecting && pickerMode) {
-                        TextButton(onClick = { onPicked(items.filter { it.key in selected }) }) { Text("تأیید") }
+                        TextButton(onClick = { onPicked(items.filter { it.key in selected }) }) { Text("Done") }
                     } else if (selecting) {
                         IconButton(onClick = { shareItems(ctx, items.filter { it.key in selected }) }) {
                             Icon(Icons.Default.Share, null)
@@ -133,7 +133,7 @@ fun GalleryScreen(
     ) { padding ->
         if (items.isEmpty() && header == null) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("اینجا هنوز چیزی نیست", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Nothing here yet", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         } else {
             LazyVerticalGrid(
@@ -200,11 +200,11 @@ fun GalleryScreen(
         val chosen = items.filter { it.key in selected }
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("حذف ${chosen.size} مورد؟") },
+            title = { Text("Delete ${chosen.size} items?") },
             text = {
                 Text(
-                    "از گالری ابری حذف می‌شوند و به سطل زباله Google Drive می‌روند (تا ۳۰ روز قابل بازیابی). " +
-                        "نسخه‌ای که هنوز روی گوشی است دست نمی‌خورد."
+                    "They are removed from Cloud Gallery and go to the Google Drive trash (recoverable for 30 days). " +
+                        "Any copy still on the phone is not touched."
                 )
             },
             confirmButton = {
@@ -215,12 +215,12 @@ fun GalleryScreen(
                             removeFromLibrary(app, chosen)
                             selected = emptySet()
                         } catch (e: Exception) {
-                            Toast.makeText(ctx, "حذف انجام نشد: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(ctx, "Delete failed: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
-                }) { Text("حذف") }
+                }) { Text("Delete") }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("انصراف") } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
         )
     }
 }
@@ -259,20 +259,20 @@ fun SyncBanner(app: App, items: List<Item>) {
     Card(Modifier.fillMaxWidth().padding(8.dp)) {
         Column(Modifier.padding(12.dp)) {
             if (running && total > 0) {
-                Text("در حال آپلود: $done از $total")
+                Text("Uploading: $done of $total")
                 LinearProgressIndicator(
                     progress = { done.toFloat() / total },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 )
             } else if (pending > 0) {
-                Text("$pending فایل در صف آپلود است")
+                Text("$pending files waiting to upload")
             }
             if (failed > 0) {
-                Text("$failed فایل آپلود نشد", color = MaterialTheme.colorScheme.error)
+                Text("$failed files failed to upload", color = MaterialTheme.colorScheme.error)
                 TextButton(onClick = {
                     app.db.resetFailed()
                     Scheduler.syncNow(ctx)
-                }) { Text("تلاش دوباره") }
+                }) { Text("Retry") }
             }
         }
     }

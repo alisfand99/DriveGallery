@@ -30,14 +30,12 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-/** Everything is right to left, and colours follow the system (dynamic colour on Android 12+). */
+/** Colours follow the system (dynamic colour on Android 12+). */
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
     val ctx = LocalContext.current
     val scheme = if (isSystemInDarkTheme()) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        MaterialTheme(colorScheme = scheme, content = content)
-    }
+    MaterialTheme(colorScheme = scheme, content = content)
 }
 
 /** What the permission and setup screens need to know about the current state of the phone. */
@@ -77,13 +75,13 @@ fun Thumb(item: Item, modifier: Modifier = Modifier.fillMaxSize(), scale: Conten
     AsyncImage(model = model, contentDescription = null, contentScale = scale, modifier = modifier)
 }
 
-private val persian: Locale = Locale.forLanguageTag("fa-IR-u-ca-persian")
+private val locale: Locale = Locale.getDefault()
 
 fun dayLabel(ms: Long): String =
-    SimpleDateFormat("EEEE d MMMM yyyy", persian).format(Date(ms))
+    SimpleDateFormat("EEEE d MMMM yyyy", locale).format(Date(ms))
 
 fun dateTimeLabel(ms: Long): String =
-    SimpleDateFormat("yyyy/MM/dd  HH:mm", persian).format(Date(ms))
+    SimpleDateFormat("yyyy/MM/dd  HH:mm", locale).format(Date(ms))
 
 /** Local calendar day number, used to group photos without formatting every single one. */
 fun dayNumber(ms: Long): Long = (ms + TimeZone.getDefault().getOffset(ms)) / 86_400_000L
@@ -114,7 +112,7 @@ fun shareItems(ctx: Context, items: List<Item>) {
     uris.drop(1).forEach { clip.addItem(ClipData.Item(it)) }
     intent.clipData = clip
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    ctx.startActivity(Intent.createChooser(intent, "اشتراک‌گذاری"))
+    ctx.startActivity(Intent.createChooser(intent, "Share"))
 }
 
 /**

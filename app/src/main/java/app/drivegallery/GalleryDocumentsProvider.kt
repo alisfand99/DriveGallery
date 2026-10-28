@@ -15,7 +15,7 @@ import java.io.File
 import java.io.FileNotFoundException
 
 /**
- * Shows the cloud library as a storage location ("گالری ابری") in the system file picker.
+ * Shows the cloud library as a storage location ("Cloud Gallery") in the system file picker.
  * Any app that lets you attach a file (WhatsApp documents, Telegram files, email, ...) can browse
  * it and receive photos or videos from it. Document ids: "dir:<folder path>" and "file:<item key>".
  */
@@ -48,8 +48,8 @@ class GalleryDocumentsProvider : DocumentsProvider() {
         c.newRow()
             .add(Root.COLUMN_ROOT_ID, ROOT_ID)
             .add(Root.COLUMN_FLAGS, Root.FLAG_SUPPORTS_IS_CHILD)
-            .add(Root.COLUMN_TITLE, "گالری ابری")
-            .add(Root.COLUMN_SUMMARY, "عکس‌ها و ویدیوهای Google Drive")
+            .add(Root.COLUMN_TITLE, "Cloud Gallery")
+            .add(Root.COLUMN_SUMMARY, "Photos and videos from Google Drive")
             .add(Root.COLUMN_DOCUMENT_ID, "dir:")
             .add(Root.COLUMN_ICON, R.mipmap.ic_launcher)
             .add(Root.COLUMN_MIME_TYPES, "image/*\nvideo/*")
@@ -60,7 +60,7 @@ class GalleryDocumentsProvider : DocumentsProvider() {
         c.newRow()
             .add(Document.COLUMN_DOCUMENT_ID, "dir:$path")
             .add(Document.COLUMN_MIME_TYPE, Document.MIME_TYPE_DIR)
-            .add(Document.COLUMN_DISPLAY_NAME, if (path.isEmpty()) "گالری ابری" else path.substringAfterLast('/'))
+            .add(Document.COLUMN_DISPLAY_NAME, if (path.isEmpty()) "Cloud Gallery" else path.substringAfterLast('/'))
             .add(Document.COLUMN_LAST_MODIFIED, null)
             .add(Document.COLUMN_FLAGS, 0)
             .add(Document.COLUMN_SIZE, null)

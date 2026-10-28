@@ -124,20 +124,20 @@ fun ViewerScreen(app: App, items: List<Item>, startIndex: Int, onClose: () -> Un
     if (showInfo) {
         val item = current()
         val where = when {
-            item.state == State.UPLOADED && item.localPresent -> "روی گوشی و روی Drive"
-            item.state == State.UPLOADED -> "فقط روی Drive"
-            else -> "فقط روی گوشی (در صف آپلود)"
+            item.state == State.UPLOADED && item.localPresent -> "On phone and on Drive"
+            item.state == State.UPLOADED -> "On Drive only"
+            else -> "On phone only (waiting to upload)"
         }
         AlertDialog(
             onDismissRequest = { showInfo = false },
-            confirmButton = { TextButton(onClick = { showInfo = false }) { Text("بستن") } },
+            confirmButton = { TextButton(onClick = { showInfo = false }) { Text("Close") } },
             title = { Text(item.name) },
             text = {
                 Text(
-                    "پوشه: ${item.relPath}\n" +
-                        "حجم: ${formatSize(item.size)}\n" +
-                        "تاریخ: ${dateTimeLabel(item.dateTaken)}\n" +
-                        "محل ذخیره: $where"
+                    "Folder: ${item.relPath}\n" +
+                        "Size: ${formatSize(item.size)}\n" +
+                        "Date: ${dateTimeLabel(item.dateTaken)}\n" +
+                        "Stored: $where"
                 )
             },
         )
@@ -146,8 +146,8 @@ fun ViewerScreen(app: App, items: List<Item>, startIndex: Int, onClose: () -> Un
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("حذف این مورد؟") },
-            text = { Text("به سطل زباله Google Drive می‌رود (تا ۳۰ روز قابل بازیابی). نسخه روی گوشی دست نمی‌خورد.") },
+            title = { Text("Delete this item?") },
+            text = { Text("It goes to the Google Drive trash (recoverable for 30 days). The copy on the phone is not touched.") },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete = false
@@ -157,12 +157,12 @@ fun ViewerScreen(app: App, items: List<Item>, startIndex: Int, onClose: () -> Un
                             removeFromLibrary(app, listOf(target))
                             onClose()
                         } catch (e: Exception) {
-                            Toast.makeText(ctx, "حذف انجام نشد: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(ctx, "Delete failed: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
-                }) { Text("حذف") }
+                }) { Text("Delete") }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("انصراف") } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
         )
     }
 }

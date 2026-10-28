@@ -44,7 +44,7 @@ class PickerActivity : ComponentActivity() {
                 }
                 GalleryScreen(
                     app = app,
-                    title = "انتخاب از گالری ابری",
+                    title = "Choose from Cloud Gallery",
                     items = list,
                     onBack = { finish() },
                     pickerMode = true,
