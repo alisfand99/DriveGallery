@@ -168,6 +168,7 @@ fun ViewerScreen(app: App, items: List<Item>, startIndex: Int, onClose: () -> Un
 }
 
 /** Pinch to zoom, double tap to toggle zoom, drag to pan only while zoomed so swiping between photos still works. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ZoomableImage(model: Any?, active: Boolean, onTap: () -> Unit) {
     var scale by remember { mutableFloatStateOf(1f) }
