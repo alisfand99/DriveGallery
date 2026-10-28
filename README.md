@@ -1,47 +1,53 @@
-‏# گالری ابری (Drive Gallery)
+# Cloud Gallery (Drive Gallery)
 
-‏برنامه‌ای برای اندروید که جای گالری گوشی را می‌گیرد: هر عکس و ویدیوی جدید خودکار به Google Drive آپلود می‌شود، با همان ساختار پوشه‌های گوشی، و بعد از تأیید کامل (چک‌سام MD5) از گوشی پاک می‌شود.
+An Android app that replaces the phone gallery. Every new photo and video is uploaded to Google Drive automatically, with the same folder structure as on the phone, and after a full verification (MD5 checksum) it can be removed from the phone.
 
-‏## ۱. دسترسی Google (انجام شده)
+## 1. Google access (already done)
 
-‏تنظیمات Google Cloud از قبل انجام شده است: Drive API روشن است، دسترسی `drive.file` اضافه شده، کاربر آزمایشی ثبت شده و کلاینت اندروید برای `app.drivegallery` با SHA-1 کلید همراه پروژه ساخته شده است. چیزی لازم نیست بسازی یا کپی کنی.
+The Google Cloud setup is finished: the Drive API is enabled, the `drive.file` scope is added, your account is registered as a test user, and an Android OAuth client exists for `app.drivegallery` with the SHA-1 of the bundled signing key. There is nothing to create or copy.
 
-‏کلید امضا (`app/drivegallery.jks`) داخل پروژه است و هم Debug و هم Release با آن امضا می‌شوند، پس SHA-1 همیشه با کلاینت می‌خواند. این فایل را حذف یا عوض نکن.
+The signing key (`app/drivegallery.jks`) is part of the project and both Debug and Release builds use it, so the SHA-1 always matches the OAuth client. Do not delete or replace this file.
 
-‏**نکته مهم:** وضعیت انتشار برنامه در Google Cloud الان Testing است. در این حالت دسترسی هر ۷ روز منقضی می‌شود و باید دوباره «اتصال» را بزنی. برای حل دائمی: Google Cloud > Google Auth Platform > Audience > **Publish app** را بزن. این scope حساس نیست و نیاز به تأیید گوگل ندارد.
+**Important:** the publishing status in Google Cloud is still Testing. In that state the access expires every 7 days and you have to tap Connect again. To fix it permanently: Google Cloud > Google Auth Platform > Audience > **Publish app**. The scope is not sensitive and needs no Google review.
 
-‏## ۲. ساخت و نصب
+## 2. Build and install
 
-‏۱. پوشه `DriveGallery` را در Android Studio باز کن و منتظر Sync بماند.
-‏۲. گوشی را با USB وصل کن (Developer options > USB debugging) و دکمه Run را بزن. یا Build > Build APK(s).
-‏۳. اگر کلید امضا را عوض کنی، SHA-1 جدید را باید در کلاینت اندروید Google Cloud اضافه کنی.
+Every push to `main` builds the APK on GitHub Actions and publishes it as a release:
 
-‏## ۳. اولین اجرا
+```
+https://github.com/alisfand99/DriveGallery/releases/tag/latest
+```
 
-‏۱. «اتصال» را بزن و حساب Google را انتخاب کن.
-‏۲. دسترسی عکس‌ها را روی «همه» بگذار و دسترسی موقعیت عکس‌ها را هم بده (بدون آن، اندروید مختصات GPS را از فایل پاک می‌کند و نسخه ابری دقیقاً همان فایل نمی‌شود).
-‏۳. در تنظیمات: دسترسی اعلان‌ها، **مدیریت رسانه** (برای حذف بی‌صدا) و **بدون محدودیت باتری** را بده.
-‏۴. حالت حذف را اول روی «دستی» نگه دار تا کل گالری آپلود شود. در Drive پوشه `PhoneGallery` را چک کن. بعد اگر خواستی روی «خودکار» یا «با دکمه» بگذار.
+Download `DriveGallery.apk` on the phone (signed in to GitHub) and install it. Android will ask to allow installs from that source, and Play Protect may warn about an unknown app: choose Install anyway.
 
-‏## ۴. حالت‌های حذف از گوشی (تنظیمات)
+You can also open the project in Android Studio and press Run.
 
-| حالت | رفتار |
+## 3. First run
+
+1. Tap Connect and choose your Google account.
+2. Set photo access to All, and grant photo location access too (without it Android strips GPS data from the file and the cloud copy would not be exact).
+3. In Settings: allow notifications, **Media management** (for silent removal) and **Unrestricted battery**.
+4. Keep the delete mode on Manual until the whole gallery is uploaded. Check the `PhoneGallery` folder in Drive. Then switch to Automatic or With a button if you want.
+
+## 4. Delete modes (Settings)
+
+| Mode | Behavior |
 |---|---|
-| خودکار | بعد از آپلود و تطبیق MD5، فایل بلافاصله از گوشی پاک می‌شود |
-| دستی | برنامه چیزی پاک نمی‌کند، خودت پاک می‌کنی |
-| با دکمه | دکمه «پاک کردن همه فایل‌های آپلودشده» در تنظیمات |
+| Automatic | After upload and an MD5 match, the file is removed from the phone right away |
+| Manual | The app never deletes anything, you delete on the phone yourself |
+| With a button | The "Remove all uploaded files from the phone" button in Settings |
 
-‏در هر سه حالت فایلی پاک نمی‌شود که نسخه Drive آن تأیید نشده باشد. بدون دسترسی «مدیریت رسانه»، اندروید برای حذف یک پنجره تأیید نشان می‌دهد (یک تأیید برای هر ۵۰۰ فایل).
+In every mode, a file is only removed if its Drive copy was verified. Without the Media management permission, Android shows a confirmation dialog for removals (one per 500 files).
 
-‏## ۵. استفاده در واتساپ، تلگرام و بقیه
+## 5. Using it in WhatsApp, Telegram and other apps
 
-‏- **اشتراک‌گذاری از خود برنامه:** عکس را باز کن یا چند تا انتخاب کن و دکمه اشتراک بزن، بعد واتساپ یا تلگرام را انتخاب کن.
-‏- **از داخل برنامه‌های دیگر:** هر برنامه‌ای که انتخاب‌گر استاندارد اندروید را صدا بزند، «گالری ابری» را به‌عنوان یک گزینه نشان می‌دهد. در انتخاب فایل (Documents / Files) هم یک مکان ذخیره به نام «گالری ابری» اضافه شده است.
-‏- **محدودیت:** تب «گالری» داخل خود واتساپ و تلگرام گالری داخلی خودشان است که مستقیم از حافظه گوشی می‌خواند و اندروید اجازه نمی‌دهد برنامه‌ای آن را جایگزین کند. برای آنها از «Document / File» یا از اشتراک‌گذاری خود برنامه استفاده کن.
+- **Share from the app:** open a photo or select several, tap Share, and pick WhatsApp or Telegram.
+- **From inside other apps:** any app that opens the standard Android picker lists Cloud Gallery as an option. In the Documents / Files picker there is also a storage location called Cloud Gallery.
+- **Limit:** the Gallery tab inside WhatsApp and Telegram is their own built-in gallery, which reads straight from phone storage and cannot be replaced by another app. For those, use Document / File or the app's own Share.
 
-‏## ۶. نکات
+## 6. Notes
 
-‏- برنامه فقط فایل‌هایی را می‌بیند که خودش در Drive ساخته (scope محدود `drive.file`). فایل‌هایی که خودت دستی در Drive می‌ریزی در برنامه دیده نمی‌شوند.
-‏- حذف در برنامه یعنی رفتن به سطل زباله Drive (۳۰ روز قابل بازیابی).
-‏- اگر گوشی عوض شد یا برنامه را دوباره نصب کردی، با اتصال به همان حساب، کتابخانه از Drive دوباره ساخته می‌شود و فایل‌های تکراری دوباره آپلود نمی‌شوند.
-‏- ۶ ساعت یک بار تغییرات Drive با برنامه همگام می‌شود.
+- The app only sees files it created in Drive (the narrow `drive.file` scope). Files you add to Drive by hand do not appear in the app.
+- Deleting in the app moves the file to the Drive trash (recoverable for 30 days).
+- If you change phones or reinstall, signing in with the same account rebuilds the library from Drive and already uploaded files are not uploaded again.
+- Changes made in Drive are synced to the app every 6 hours.
