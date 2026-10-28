@@ -6,7 +6,7 @@ An Android app that replaces the phone gallery. Every new photo and video is upl
 
 The Google Cloud setup is finished: the Drive API is enabled, the `drive.file` scope is added, your account is registered as a test user, and an Android OAuth client exists for `app.drivegallery` with the SHA-1 of the bundled signing key. There is nothing to create or copy.
 
-The signing key (`app/drivegallery.jks`) is part of the project and both Debug and Release builds use it, so the SHA-1 always matches the OAuth client. Do not delete or replace this file.
+The project bundles a demo signing key (`app/drivegallery.jks`), public on purpose like Android's `debug.keystore`, so the SHA-1 always matches the OAuth client. It protects nothing. If you fork this, generate your own key and register its SHA-1 in your own Google Cloud OAuth client.
 
 **Important:** the publishing status in Google Cloud is still Testing. In that state the access expires every 7 days and you have to tap Connect again. To fix it permanently: Google Cloud > Google Auth Platform > Audience > **Publish app**. The scope is not sensitive and needs no Google review.
 

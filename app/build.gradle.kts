@@ -16,7 +16,8 @@ android {
         versionName = "1.0"
     }
 
-    // One fixed key for debug and release, so the SHA-1 registered in Google Cloud always matches.
+    // Demo signing key, public on purpose (like Android's debug.keystore). It only keeps the SHA-1
+    // registered in Google Cloud stable for sideloaded builds. Use your own key for anything you distribute.
     signingConfigs {
         create("main") {
             storeFile = file("drivegallery.jks")
